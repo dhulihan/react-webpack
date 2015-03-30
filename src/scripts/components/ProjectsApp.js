@@ -2,6 +2,7 @@
 
 var React = require('react/addons');
 var ReactTransitionGroup = React.addons.TransitionGroup;
+var Foo = require('./Foo.js');
 
 // CSS
 require('../../styles/normalize.css');
@@ -16,6 +17,7 @@ var ProjectsApp = React.createClass({
         <ReactTransitionGroup transitionName="fade">
           <img src={imageURL} />
         </ReactTransitionGroup>
+	    <Foo />
       </div>
     );
   }

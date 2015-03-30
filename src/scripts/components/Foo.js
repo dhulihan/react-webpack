@@ -2,7 +2,7 @@
 
 var React = require('react/addons');
 
-require('styles/Foo.scss');
+//require('styles/Foo.scss');
 
 var Foo = React.createClass({
   render: function () {
@@ -10,7 +10,7 @@ var Foo = React.createClass({
         <div>
           <p>Content for Foo</p>
         </div>
-      );
+    );
   }
 });
 

@@ -1,6 +1,6 @@
 # react-webpack
 
-A sandbox for react/webpack.
+A sandbox for react/webpack. 
 
 ## Running
 
