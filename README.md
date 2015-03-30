@@ -2,5 +2,8 @@
 
 A sandbox for react/webpack.
 
-* Running
-	* `grunt serve`
+## Running
+
+```sh
+grunt serve
+```
