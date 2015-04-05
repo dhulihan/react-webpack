@@ -1,6 +1,6 @@
 'use strict';
 
-var ProjectsApp = require('./app');
+var App = require('./app');
 var React = require('react');
 var Router = require('react-router');
 var Route = Router.Route;
@@ -13,8 +13,8 @@ require("../../styles/bootstrap-theme.scss");
 var content = document.getElementById('content');
 
 var Routes = (
-  <Route handler={ProjectsApp}>
-    <Route name="/" handler={ProjectsApp}/>
+  <Route handler={App}>
+    <Route name="/" handler={App}/>
   </Route>
 );
 
