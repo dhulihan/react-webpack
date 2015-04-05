@@ -3,7 +3,8 @@
 var React = require('react/addons');
 var ReactTransitionGroup = React.addons.TransitionGroup;
 var Foo = require('./Foo.js');
-var Showdown = require('showdown/src/showdown.js');
+
+//require('showdown/src/showdown.js');
 //var converter = new Showdown.converter();
 
 var Comment = React.createClass({
@@ -37,6 +38,8 @@ var CommentForm = React.createClass({
     return (
       <div className="commentForm">
         I am a CommentForm.
+        <br />
+        <div className="btn btn-primary">Leave a comment</div>
       </div>
     );
   }
