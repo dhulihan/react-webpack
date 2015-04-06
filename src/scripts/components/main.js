@@ -8,7 +8,7 @@ var Route = Router.Route;
 require("bootstrap-webpack");
 // require("bootstrap-webpack!../../../bootstrap.config.js");
 
-require("../../styles/bootstrap-theme.scss");
+//require("../../styles/bootstrap-theme.scss");
 
 var content = document.getElementById('content');
 
