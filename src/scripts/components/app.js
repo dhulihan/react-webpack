@@ -3,9 +3,10 @@
 var React = require('react/addons');
 var ReactTransitionGroup = React.addons.TransitionGroup;
 var Foo = require('./Foo.js');
+var $ = require('jquery');
 
-//require('showdown/src/showdown.js');
-//var converter = new Showdown.converter();
+// var Showdown = require('showdown');
+// var converter = new Showdown.converter();
 
 var Comment = React.createClass({
   render: function() {
@@ -15,8 +16,8 @@ var Comment = React.createClass({
           {this.props.author}
         </h2>
         <div className="commentContent">
-          {this.props.children}
-        </div>
+          {this.props.children.toString()}
+          </div>
       </div>
     );
   }
@@ -24,35 +25,99 @@ var Comment = React.createClass({
 
 var CommentList = React.createClass({
   render: function() {
+    var commentNodes = this.props.data.map(function(comment){
+      return(
+        <Comment author={comment.author}>
+          {comment.text}
+        </Comment>
+      );
+    });
     return (
       <div className="commentList">
-        <Comment author="Bob Jones">I like this.</Comment>
-        <Comment author="Alice Smith">I *do* not.</Comment>
+        {commentNodes}
       </div>
     );
   }
 });
 
 var CommentForm = React.createClass({
+  handleSubmit: function(e) {
+    e.preventDefault();
+    alert(React.getDOMNode(this.refs.author).value);
+    var author = React.findDOMNode(this.refs.author).value.trim();
+    var text = React.findDOMNode(this.refs.text).value.trim();
+    
+    if (!text || !author) {
+      return;
+    }
+    // TODO: send request to the server
+
+    // Call parent event
+    this.props.onCommentSubmit({author: author, text: text});
+
+    // Clear text fields
+    React.findDOMNode(this.refs.author).value = '';
+    React.findDOMNode(this.refs.text).value = '';
+    return;
+  },  
   render: function() {
     return (
-      <div className="commentForm">
-        I am a CommentForm.
-        <br />
-        <div className="btn btn-primary">Leave a comment</div>
-      </div>
+      <form className="commentForm form-inline" onSubmit={this.handleSubmit}>
+        <div className="form-group">
+          <input type="text" className="form-control" ref="author" placeholder="Your name" />
+        </div>
+        <div className="form-group">
+          <input type="text" className="form-control" ref="text" placeholder="Say something..." />
+        </div>
+        <input className="btn btn-primary" type="submit" value="Post"  />
+      </form>
     );
   }
 });
 
 var CommentBox = React.createClass({
+  loadCommentsFromServer: function() {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },  
+  getInitialState: function() {
+    return({data: []});
+  }, 
+  componentDidMount: function() {
+    this.loadCommentsFromServer();
+
+    // Put it on interval
+    //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+  },  
+  handleCommentSubmit: function(comment) {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      type: 'POST',
+      data: comment,
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },  
   render: function() {
     return (
       <div className="commentBox">
         <h1>Comments</h1>
-        <CommentList />
+        <CommentList data={this.state.data} />
         <hr />
-        <CommentForm />
+        <CommentForm onCommentSubmit={this.handleCommentSubmit} />
       </div>
     );
   }
@@ -72,7 +137,7 @@ var ProjectsApp = React.createClass({
           <img src={imageURL} />
         </ReactTransitionGroup>
 	    <Foo />
-      <CommentBox />
+      <CommentBox url="comments.json" pollInterval={2000} />
       </div>
     );
   }
