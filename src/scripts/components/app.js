@@ -43,9 +43,8 @@ var CommentList = React.createClass({
 var CommentForm = React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
-    console.log(this.refs.author.props);
-    var author = this.refs.author.props.value.trim();
-    var text = this.refs.text.value.trim();
+    var author = React.findDOMNode(this.refs.author).value.trim();
+    var text = React.findDOMNode(this.refs.text).value.trim();
     
     if (!text || !author) {
       return;
@@ -56,8 +55,8 @@ var CommentForm = React.createClass({
     this.props.onCommentSubmit({author: author, text: text});
 
     // Clear text fields
-    this.getDOMNode(this.refs.author).value = '';
-    this.getDOMNode(this.refs.text).value = '';
+    React.findDOMNode(this.refs.author).value = '';
+    React.findDOMNode(this.refs.text).value = '';
     return;
   },  
   render: function() {
@@ -95,33 +94,38 @@ var CommentBox = React.createClass({
     this.loadCommentsFromServer();
 
     // Put it on interval
-    setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+    //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
   },  
   handleCommentSubmit: function(comment) {
     // Add comment "optimistically"
     var comments = this.state.data;
-    var newComments = comments.concat([comment]);
-    this.setState({data: newComments});    
-    $.ajax({
-      url: this.props.url,
-      dataType: 'json',
-      type: 'POST',
-      data: comment,
-      success: function(data) {
-        this.setState({data: data});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
+    comments.unshift(comment);
+    this.setState({data: comments});    
+    // $.ajax({
+    //   url: this.props.url,
+    //   dataType: 'json',
+    //   type: 'POST',
+    //   data: comment,
+    //   success: function(data) {
+    //     this.setState({data: data});
+    //   }.bind(this),
+    //   error: function(xhr, status, err) {
+    //     console.error(this.props.url, status, err.toString());
+    //   }.bind(this)
+    // });
   },  
   render: function() {
     return (
       <div className="commentBox">
         <h1>Comments</h1>
-        <CommentList data={this.state.data} />
-        <hr />
-        <CommentForm onCommentSubmit={this.handleCommentSubmit} />
+        <div className="row">
+          <div className="col-md-6">
+            <CommentForm onCommentSubmit={this.handleCommentSubmit} />
+          </div>
+          <div className="col-md-6">
+            <CommentList data={this.state.data} />
+          </div>
+        </div>      
       </div>
     );
   }
