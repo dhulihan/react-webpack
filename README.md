@@ -2,7 +2,13 @@
 
 A sandbox for react/webpack. 
 
-## Running
+## Install
+
+```sh
+npm install
+```
+
+## Run
 
 ```sh
 grunt serve
