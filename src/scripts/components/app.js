@@ -43,9 +43,9 @@ var CommentList = React.createClass({
 var CommentForm = React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
-    alert(React.getDOMNode(this.refs.author).value);
-    var author = React.findDOMNode(this.refs.author).value.trim();
-    var text = React.findDOMNode(this.refs.text).value.trim();
+    console.log(this.refs.author.props);
+    var author = this.refs.author.props.value.trim();
+    var text = this.refs.text.value.trim();
     
     if (!text || !author) {
       return;
@@ -56,8 +56,8 @@ var CommentForm = React.createClass({
     this.props.onCommentSubmit({author: author, text: text});
 
     // Clear text fields
-    React.findDOMNode(this.refs.author).value = '';
-    React.findDOMNode(this.refs.text).value = '';
+    this.getDOMNode(this.refs.author).value = '';
+    this.getDOMNode(this.refs.text).value = '';
     return;
   },  
   render: function() {
@@ -95,9 +95,13 @@ var CommentBox = React.createClass({
     this.loadCommentsFromServer();
 
     // Put it on interval
-    //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+    setInterval(this.loadCommentsFromServer, this.props.pollInterval);
   },  
   handleCommentSubmit: function(comment) {
+    // Add comment "optimistically"
+    var comments = this.state.data;
+    var newComments = comments.concat([comment]);
+    this.setState({data: newComments});    
     $.ajax({
       url: this.props.url,
       dataType: 'json',
